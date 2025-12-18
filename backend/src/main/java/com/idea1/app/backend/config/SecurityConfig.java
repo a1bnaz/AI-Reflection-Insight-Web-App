@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,10 +29,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(customizer -> customizer.disable()); // disable CSRF for testing purposes becuase I'm using Postman
-        http.authorizeHttpRequests(request -> request.requestMatchers("/register", "/login").permitAll().anyRequest().authenticated()); // all requests need to be authenticated
-        http.formLogin(form -> form.disable()); // enable form login (default login page)
-        http.httpBasic(Customizer.withDefaults()); // enable basic auth (for Postman testing)
+        http.csrf(customizer -> customizer.disable()); // disable CSRF for stateless JWT authentication
+        http.authorizeHttpRequests(request -> request
+            .requestMatchers("/register", "/login", "/").permitAll()
+            .anyRequest().authenticated()); // all other requests need to be authenticated
+        http.formLogin(form -> form.disable()); // disable form login for JWT-based auth
+        http.httpBasic(basic -> basic.disable()); // disable basic auth - using JWT only
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -41,27 +42,15 @@ public class SecurityConfig {
         
     }
 
-    // @Bean
-    // !!custom authentication provider that i'm going to comment out for now!!
-    // public AuthenticationProvider authenticationProvider() {
-    //     DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-    //     provider.setUserDetailsService(userDetailsService);
-    //     provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
-    //      return provider;
-    // }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-
         return new BCryptPasswordEncoder(12); 
-        
     }
 
-    // figure out what this method does later
+    // AuthenticationManager automatically configured by Spring Boot using UserDetailsService and PasswordEncoder beans
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-
     }
 
 }

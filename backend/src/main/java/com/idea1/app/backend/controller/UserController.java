@@ -23,8 +23,6 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody User user){
-        System.out.println("TESTING LOGIN endpoint");
         return userService.verify(user);
-
     }
 }

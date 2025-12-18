@@ -2,6 +2,7 @@ package com.idea1.app.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,19 +32,20 @@ public class UserService {
     }
 
     // verify user credentials
-    // maybe wrap this in a try-catch block later?
     public String verify(User user) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-            user.getUsername(), user.getPassword()
-        ));
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                user.getUsername(), user.getPassword()
+            ));
 
-        if(authentication.isAuthenticated()) {
-
-            return jwtService.generateToken(user.getUsername());
-
+            if(authentication.isAuthenticated()) {
+                return jwtService.generateToken(user.getUsername());
+            }
+            
+            throw new BadCredentialsException("Authentication failed");
+        } catch (Exception e) {
+            throw new BadCredentialsException("Invalid username or password", e);
         }
-
-        return "Authentication failed"; // this line should never be reached
     }
 
 }

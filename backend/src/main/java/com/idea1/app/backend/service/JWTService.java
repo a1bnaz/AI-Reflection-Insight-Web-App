@@ -1,14 +1,10 @@
 package com.idea1.app.backend.service;
 
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +18,10 @@ import io.jsonwebtoken.security.Keys;
 // what it does: creates JWT tokens with a subject (username), issued at time, expiration time, and signs it with a secret key
 // connection: used by UserService to generate tokens upon successful authentication
 public class JWTService {
-    private String SECRET = "";
+    @Value("${jwt.secret:defaultSecretKeyForDevelopmentOnlyChangeThisInProduction}")
+    private String SECRET;
+    
     private static final long EXP_MS = 1000 * 60 * 60; // 1 hour
-
-    // everytime you restart the app, a new secret key is generated... meaning a new token is generated... invalidating all previous tokens - not ideal for production. store the secret key securely in application.properties or an environment variable for production use.
-    public JWTService() throws NoSuchAlgorithmException {
-        try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey secretKey = keyGen.generateKey();
-            SECRET = Base64.getEncoder().encodeToString(secretKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public String generateToken(String subject) {
         Date now = new Date();
@@ -67,9 +54,12 @@ public class JWTService {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUserName(token);
-
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String username = extractUserName(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token){
