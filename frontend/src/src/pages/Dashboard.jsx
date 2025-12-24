@@ -5,7 +5,7 @@ export function useUsers(){
     return useQuery({
         queryKey: ["user"], // the "ID" for this data in the cache
         queryFn: async () => {
-            const response = await api.get("/userss");
+            const response = await api.get("/users");
             return response.data;
         },
     });
