@@ -12,9 +12,9 @@ function LoginPage() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="border rounded-lg p-6 max-w-md mx-auto mt-20 shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          login
+          Login
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
