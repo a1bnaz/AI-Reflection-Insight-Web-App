@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import { useRegister } from "../hooks/useRegister";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage(){
     const [formData, setFormData] = useState({username: '', password: ''});
     const { mutate: register, isPending } = useRegister();
 
+    const navigate = useNavigate();
+
     function handleSubmit(e) {
         e.preventDefault();
         register(formData);
+    }
+
+    function handleLoginButton(){
+        navigate("/login");
     }
 
     return(
@@ -34,12 +41,21 @@ function RegisterPage(){
                         value={formData.password}
                         onChange={(e) => setFormData({...formData, password: e.target.value})}
                     />
+                    {/* sign up button */}
                     <button 
                         type="submit" 
                         disabled={isPending}
                         className="bg-black text-white p-2 rounded hover:bg-gray-800 disabled:bg-gray-300 transition-colors"
                     >
                         {isPending ? 'Creating...' : 'Sign Up'}
+                    </button>
+                    {/* login button */}
+                    <button 
+                        type="button" 
+                        onClick={handleLoginButton}
+                        className="bg-black text-white p-2 rounded hover:bg-gray-800 disabled:bg-gray-300 transition-colors"
+                    >
+                        Login
                     </button>
                 </form>
             </div>

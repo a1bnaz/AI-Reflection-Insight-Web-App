@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import { useLogin } from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const { mutate: login, isPending, isError } = useLogin();
 
+  const navigate = useNavigate();
+
   function handleSubmit(e) {
     e.preventDefault();
     login(formData); // trigger the mutation
+  }
+
+  function handleRegisterButton() {
+    navigate("/register");
   }
 
   return (
@@ -30,7 +37,6 @@ function LoginPage() {
             }
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-50"
             placeholder="enter username"
-            required
           />
 
           {/* password */}
@@ -43,16 +49,24 @@ function LoginPage() {
             }
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-50"
             placeholder="enter password"
-            required
           />
 
-          {/* submit button */}
+          {/* submit button -> login button */}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 font-semibold"
             disabled={isPending}
           >
             {isPending ? "Logging in..." : "Log In"}
+          </button>
+
+          {/* submit button -> register button */}
+          <button
+            type="button"
+            onClick={handleRegisterButton}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 font-semibold"
+          >
+            Register
           </button>
 
           {isError && (
