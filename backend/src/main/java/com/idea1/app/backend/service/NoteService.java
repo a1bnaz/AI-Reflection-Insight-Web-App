@@ -65,15 +65,22 @@ public class NoteService {
         // 1. find the User from the DB using the username
         // 2. set the User on the note object: note.setUser(user)
         // 3. save and return
+        System.out.println("1. starting createNote with username: " + username);
         User user = userRepo.findByUsername(username);
+        System.out.println("2. found user: " + (user != null ? user.getUsername() : "NULL"));
 
         if (user == null) {
             throw new ResourceNotFoundException("user not found");
         }
 
+        System.out.println("3. setting user on note");
         note.setUser(user);
-        noteRepo.save(note);
+
+         System.out.println("4. About to save note. Note ID before save: " + note.getId());
+        System.out.println("5. Note data - Title: " + note.getTitle() + ", Content: " + note.getContent() + ", User ID: " + note.getUser().getId() + "and the noteId is: " + note.getId());
+
         return noteRepo.save(note);
+
     }
 
     // 3. update note (with security check)
@@ -93,6 +100,7 @@ public class NoteService {
 
         note.setTitle(updatedData.getTitle());
         note.setContent(updatedData.getContent());
+        note.setTag(updatedData.getTag());
         
 
         return noteRepo.save(note);

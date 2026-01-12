@@ -35,7 +35,7 @@ function LoginPage() {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, username: e.target.value }))
             }
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-50"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
             placeholder="enter username"
           />
 
@@ -47,14 +47,14 @@ function LoginPage() {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, password: e.target.value }))
             }
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-50"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
             placeholder="enter password"
           />
 
           {/* submit button -> login button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 font-semibold"
+            className="w-full bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-200 font-semibold"
             disabled={isPending}
           >
             {isPending ? "Logging in..." : "Log In"}
@@ -64,7 +64,7 @@ function LoginPage() {
           <button
             type="button"
             onClick={handleRegisterButton}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 font-semibold"
+            className="w-full bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-200 font-semibold"
           >
             Register
           </button>

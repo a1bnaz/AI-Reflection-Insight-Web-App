@@ -26,6 +26,8 @@ public class Note {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    private String tag;
+
     /*
     - @ManyToOne means that many listings can belong to one user (many-to-one relationship).
     - tells JPA to create a foriegn key column named "user_id" in the Note table.
@@ -44,9 +46,10 @@ public class Note {
 
     public Note(){}
 
-    public Note(String title, String content) {
+    public Note(String title, String content, String tag) {
         this.title = title;
         this.content = content;
+        this.tag = tag;
     }
 
     public Long getId() {
@@ -95,6 +98,14 @@ public class Note {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     

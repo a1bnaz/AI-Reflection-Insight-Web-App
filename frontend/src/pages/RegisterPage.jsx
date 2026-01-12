@@ -18,49 +18,51 @@ function RegisterPage(){
     }
 
     return(
-        <div className="flex flex-col items-center justify-center min-h-screen font-sans">
-            <div className="p-8 border rounded shadow-md w-80">
-                <h2 className="text-xl font-semibold mb-6 text-center">
-                    create account
-                </h2>
+        <div className="border rounded-lg p-6 max-w-md mx-auto mt-20 shadow-lg">
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+            Create Account
+          </h2>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <input
-                        className="border p-2 rounded focus:outline-blue-500"
-                        type="text"
-                        placeholder="username"
-                        required
-                        value={formData.username}
-                        onChange={(e) => setFormData({...formData, username: e.target.value})}
-                    />
-                    <input 
-                        className="border p-2 rounded focus:outline-blue-500"
-                        type="password" 
-                        placeholder="Password"
-                        required
-                        value={formData.password}
-                        onChange={(e) => setFormData({...formData, password: e.target.value})}
-                    />
-                    {/* sign up button */}
-                    <button 
-                        type="submit" 
-                        disabled={isPending}
-                        className="bg-black text-white p-2 rounded hover:bg-gray-800 disabled:bg-gray-300 transition-colors"
-                    >
-                        {isPending ? 'Creating...' : 'Sign Up'}
-                    </button>
-                    {/* login button */}
-                    <button 
-                        type="button" 
-                        onClick={handleLoginButton}
-                        className="bg-black text-white p-2 rounded hover:bg-gray-800 disabled:bg-gray-300 transition-colors"
-                    >
-                        Login
-                    </button>
-                </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="block text-sm font-medium text-gray-700">
+              username
             </div>
+            <input
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
+              type="text"
+              placeholder="enter username"
+              required
+              value={formData.username}
+              onChange={(e) => setFormData({...formData, username: e.target.value})}
+            />
+            <div className="block text-sm font-medium text-gray-700">
+              password
+            </div>
+            <input 
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
+              type="password" 
+              placeholder="enter password"
+              required
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+            />
+            <button 
+              type="submit" 
+              disabled={isPending}
+              className="w-full bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-200 font-semibold"
+            >
+              {isPending ? 'Creating...' : 'Sign Up'}
+            </button>
+            <button 
+              type="button" 
+              onClick={handleLoginButton}
+              className="w-full bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-200 font-semibold"
+            >
+              Login
+            </button>
+          </form>
         </div>
-    )
+    );
 }
 
 export default RegisterPage;

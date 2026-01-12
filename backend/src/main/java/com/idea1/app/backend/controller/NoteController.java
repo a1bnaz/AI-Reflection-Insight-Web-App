@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +24,10 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @GetMapping("/{userId}/all")
-    public List<Note> getAllNotesFromUser(@PathVariable String username){
+    @GetMapping
+    public List<Note> getAllNotesFromUser(Authentication authentication){
+        String username = authentication.getName();
+
         return noteService.getAllNotesFromUser(username);
     }
 
@@ -36,21 +39,26 @@ public class NoteController {
     }
     
     @PostMapping
-    public ResponseEntity<Note> createNote(@RequestBody Note note, String username){
+    public ResponseEntity<Note> createNote(@RequestBody Note note, Authentication authentication){
+        String username = authentication.getName();
+        System.out.println("the user: " + username + " is trying to access the controller");
         Note newNote = noteService.createNote(note, username);
+        System.out.println("new note is being created");
 
         return ResponseEntity.ok(newNote);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Note> updateNote(@RequestBody Long noteId, Note updatedData, String username){
+    public ResponseEntity<Note> updateNote(@PathVariable Long noteId, Note updatedData, Authentication authentication){
+        String username = authentication.getName();
         Note updatedNote = noteService.updateNote(noteId, updatedData, username);
 
         return ResponseEntity.ok(updatedNote);
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteNote(@PathVariable Long noteId, String username){
+    @DeleteMapping("/{noteId}")
+    public String deleteNote(@PathVariable Long noteId, Authentication authentication){
+        String username = authentication.getName();
         noteService.deleteNote(noteId, username);
 
         return "Note with ID " + noteId + " from user: " + username + " deleted successfully.";

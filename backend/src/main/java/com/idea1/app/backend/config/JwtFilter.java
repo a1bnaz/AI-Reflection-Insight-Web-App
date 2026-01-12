@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.idea1.app.backend.service.JWTService;
 import com.idea1.app.backend.service.MyUserDetailsService;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,34 +36,32 @@ public class JwtFilter extends OncePerRequestFilter{
         String token = null;
         String username = null;
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
-            token = authHeader.substring(7);
-            try {
+        try {
+            if(authHeader != null && authHeader.startsWith("Bearer ")){
+                token = authHeader.substring(7);
                 username = jwtService.extractUserName(token);
-            } catch (Exception e) {
-                // Invalid token format - continue without authentication
-                filterChain.doFilter(request, response);
-                return;
             }
-        }
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            try {
+            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = applicationContext.getBean(MyUserDetailsService.class).loadUserByUsername(username);
 
                 if(jwtService.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-            } catch (Exception e) {
-                // User not found or token invalid - continue without authentication
-                // SecurityContext will remain empty, request will be rejected if endpoint requires auth
             }
+        } catch (ExpiredJwtException e) {
+            // Token is expired - return 401
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\": 401, \"error\": \"Unauthorized\", \"message\": \"Token has expired\"}");
+            return;
+        } catch (Exception e) {
+            // Invalid token or user not found - continue without authentication
+            // SecurityContext will remain empty, request will be rejected if endpoint requires auth
         }
 
         filterChain.doFilter(request, response);
-    }
+    }  
 }

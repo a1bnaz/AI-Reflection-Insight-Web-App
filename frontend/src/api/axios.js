@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 // 1. create an axios instance
 // this is a custom copy of axios with your backend's base URL already set.
@@ -22,20 +23,21 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 })
 
-// response interceptor
-api.interceptors.response.use(
-    (response) => response, // if the request is successful, just pass it through
-    (error) => {
-        // if the server sends back a 401 (unauthorized)
-        if (error.response && error.response.status === 401){
-            console.log("token expired or invalid. logging out...")
+// response interceptor MOVED TO APP.JSX
+// api.interceptors.response.use(
+//     (response) => response, // if the request is successful, just pass it through
+//     (error) => {
+//         // if the server sends back a 401 (unauthorized)
+//         if (error.response && error.response.status === 401){
+//             console.log("token expired or invalid. logging out...")
             
-            // clear the Zustand store (this also clears LocalStorage!)
-            useAuthStore.getState().logout();
-        }
+//             // clear the Zustand store (this also clears LocalStorage!)
+//             useAuthStore.getState().logout();
+//             navigate("/login");
+//         }
 
-        return Promise.reject(error);
-    }
-);
+//         return Promise.reject(error);
+//     }
+// );
 
 export default api;
