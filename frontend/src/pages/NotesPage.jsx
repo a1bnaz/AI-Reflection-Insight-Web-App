@@ -1,10 +1,12 @@
 
 import { useAuthStore } from "../store/authStore";
+import { useUpdateNote } from "../hooks/useUpdateNote";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { useCreateNote } from "../hooks/useCreateNote";
 import { useNotes } from "../hooks/useNotes";
 import { useDeleteNote } from "../hooks/useDeleteNote";
+import EditNoteModal from "../modal/EditNoteModal";
 
 
 function NotesPage() {
@@ -15,12 +17,27 @@ function NotesPage() {
 
   const {mutate: createNote, isPending } = useCreateNote();
   const { mutate: deleteNote, isPending: isDeleting } = useDeleteNote();
+  const { mutate: updateNote, isPending: isUpdating } = useUpdateNote();
+  const [editingId, setEditingId] = useState(null);
   const { data: notes = [], isLoading, isError } = useNotes();
   const [noteData, setNoteData] = useState({ title: "", content: "", tag: ""});
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editNoteData, setEditNoteData] = useState({ title: "", content: "", tag: ""});
 
   const handleSaveNote = () => {
     createNote(noteData);
     setNoteData({ title: "", content: "", tag: ""}); 
+  };
+
+  const openEditModal = (note) => {
+    setEditingId(note.id);
+
+    setEditNoteData({
+      title: note.title || "",
+      content: note.content || "",
+      tag: note.tag || "",
+    });
+    setIsEditOpen(true);
   };
 
 // used when the 'create your first note' button is clicked' and it scrolls down to the 'quick capture' section and highlights the border for a short bit
@@ -124,13 +141,14 @@ function NotesPage() {
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-sm text-slate-600 opacity-0 transition group-hover:opacity-100">
                       <button
-                        className="rounded-full border border-slate-200 px-3 py-1 hover:bg-white"
+                        className="rounded-full border border-slate-200 px-3 py-1 hover:bg-white cursor-pointer"
                         type="button"
+                        onClick={() => openEditModal(note)}
                       >
                         Edit
                       </button>
                       <button
-                        className="rounded-full border border-rose-100 px-3 py-1 text-rose-600 hover:bg-rose-50 disabled:opacity-50"
+                        className="rounded-full border border-rose-100 px-3 py-1 text-rose-600 hover:bg-rose-50 disabled:opacity-50 cursor-pointer"
                         type="button"
                         onClick={() => deleteNote(note.id)}
                         disabled={isDeleting}
@@ -211,6 +229,19 @@ function NotesPage() {
           </div>
         </section>
       </div>
+        <EditNoteModal
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          noteData={editNoteData}
+          onChange={setEditNoteData}
+          isUpdating={isUpdating}
+          onSave={() => 
+            updateNote(
+              { noteId: editingId, updatedData: editNoteData },
+              { onSuccess: () => setIsEditOpen(false)}
+            )
+          }
+        />
     </div>
   );
 }

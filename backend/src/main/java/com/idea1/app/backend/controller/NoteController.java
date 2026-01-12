@@ -48,8 +48,8 @@ public class NoteController {
         return ResponseEntity.ok(newNote);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Note> updateNote(@PathVariable Long noteId, Note updatedData, Authentication authentication){
+    @PutMapping("/{noteId}")
+    public ResponseEntity<Note> updateNote(@PathVariable Long noteId, @RequestBody Note updatedData, Authentication authentication){
         String username = authentication.getName();
         Note updatedNote = noteService.updateNote(noteId, updatedData, username);
 

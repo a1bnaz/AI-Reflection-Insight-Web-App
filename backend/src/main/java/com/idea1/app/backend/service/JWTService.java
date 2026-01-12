@@ -21,7 +21,7 @@ public class JWTService {
     @Value("${jwt.secret:defaultSecretKeyForDevelopmentOnlyChangeThisInProduction}")
     private String SECRET;
     
-    private static final long EXP_MS = 1000 * 20; // 20 seconds
+    private static final long EXP_MS = 1000 * 60 * 60 * 2; // 2 hours
 
     public String generateToken(String subject) {
         Date now = new Date();
