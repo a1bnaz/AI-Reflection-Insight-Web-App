@@ -1,15 +1,17 @@
+import { useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
+import { useNotes } from "../hooks/useNotes";
+import { formatNoteTimestamp } from "../utils/formatNoteTimestamp";
+import { CreateNoteModal } from "../modal/CreateNoteModal";
 
-const recentNotes = [
-  { id: 1, title: "Project kickoff", updatedAt: "Today" },
-  { id: 2, title: "Grocery list", updatedAt: "Yesterday" },
-  { id: 3, title: "Ideas to explore", updatedAt: "Mon" },
-];
 
 function Dashboard() {
+  const [isAddNoteModalOpen, setIsAddNoteModalOpen] = useState(false);
   const currentUser = useAuthStore((state) => state.user);
   const navigate = useNavigate();
+
+    const { data: notes = [], isLoading, isError } = useNotes();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
@@ -50,13 +52,15 @@ function Dashboard() {
             </div>
 
             <div className="space-y-2">
-              {recentNotes.map((note) => (
+              {notes.slice(0, 3).map((note) => (
                 <div
                   key={note.id}
                   className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 p-3 hover:bg-slate-100 transition cursor-pointer"
                 >
                   <span className="font-medium text-slate-900">{note.title}</span>
-                  <span className="text-xs text-slate-500">{note.updatedAt}</span>
+                  <span className="text-xs text-slate-500">
+                    {formatNoteTimestamp(note.updatedAt)}
+                  </span>
                 </div>
               ))}
             </div>
@@ -64,6 +68,7 @@ function Dashboard() {
             <button
               className="mt-4 w-full rounded-lg border-2 border-dashed border-slate-200 py-2 text-sm font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition"
               type="button"
+              onClick={() => setIsAddNoteModalOpen(true)}
             >
               + Add new note
             </button>
@@ -157,6 +162,11 @@ function Dashboard() {
           </div>
         </section>
       </div>
+
+      <CreateNoteModal
+        isOpen={isAddNoteModalOpen}
+        onClose={() => setIsAddNoteModalOpen(false)}
+      />
     </div>
   );
 }

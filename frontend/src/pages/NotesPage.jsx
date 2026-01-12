@@ -7,6 +7,7 @@ import { useCreateNote } from "../hooks/useCreateNote";
 import { useNotes } from "../hooks/useNotes";
 import { useDeleteNote } from "../hooks/useDeleteNote";
 import EditNoteModal from "../modal/EditNoteModal";
+import { formatNoteTimestamp } from "../utils/formatNoteTimestamp";
 
 
 function NotesPage() {
@@ -19,6 +20,7 @@ function NotesPage() {
   const { mutate: deleteNote, isPending: isDeleting } = useDeleteNote();
   const { mutate: updateNote, isPending: isUpdating } = useUpdateNote();
   const [editingId, setEditingId] = useState(null);
+  
   const { data: notes = [], isLoading, isError } = useNotes();
   const [noteData, setNoteData] = useState({ title: "", content: "", tag: ""});
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -130,7 +132,7 @@ function NotesPage() {
                         {note.tag || "Untagged"}
                       </p>
                       <span className="text-xs text-slate-500">
-                        {new Date(note.updatedAt).toLocaleDateString()}
+                        {formatNoteTimestamp(note.updatedAt)}
                       </span>
                     </div>
                     <h3 className="mt-3 text-lg font-semibold text-slate-900">

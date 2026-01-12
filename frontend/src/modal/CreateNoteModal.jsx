@@ -1,5 +1,20 @@
+import { useState } from "react";
+import { useCreateNote } from "../hooks/useCreateNote";
 
-function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating = false }) {
+export function CreateNoteModal({ isOpen, onClose }) {
+  const [noteData, setNoteData] = useState({ title: "", content: "", tag: "" });
+  const { mutate: createNote, isPending } = useCreateNote();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createNote(noteData, {
+      onSuccess: () => {
+        setNoteData({ title: "", content: "", tag: "" });
+        onClose();
+      },
+    });
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -9,9 +24,9 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
       <div className="relative w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-100">
         <header className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Edit note</p>
-            <h2 className="text-xl font-semibold text-slate-900">Update your note</h2>
-            <p className="text-sm text-slate-500">Adjust the title, text, or tag and save your changes.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Create note</p>
+            <h2 className="text-xl font-semibold text-slate-900">Add a new note</h2>
+            <p className="text-sm text-slate-500">Capture your thoughts, ideas, and important information.</p>
           </div>
           <button
             type="button"
@@ -22,27 +37,28 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
           </button>
         </header>
 
-        <form className="mt-4 flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
           <input
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
             placeholder="Title"
             type="text"
             value={noteData.title}
-            onChange={(e) => onChange({ ...noteData, title: e.target.value })}
+            onChange={(e) => setNoteData({ ...noteData, title: e.target.value })}
+            required
           />
           <textarea
             className="min-h-[120px] w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
-            placeholder="Update your note..."
+            placeholder="Write your note..."
             value={noteData.content}
-            onChange={(e) => onChange({ ...noteData, content: e.target.value })}
+            onChange={(e) => setNoteData({ ...noteData, content: e.target.value })}
           />
           <div className="flex flex-wrap items-center gap-2">
             <select
               className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
               value={noteData.tag}
-              onChange={(e) => onChange({ ...noteData, tag: e.target.value })}
+              onChange={(e) => setNoteData({ ...noteData, tag: e.target.value })}
             >
-              <option>Tag</option>
+              <option value="">Tag</option>
               <option>Work</option>
               <option>Personal</option>
               <option>Ideas</option>
@@ -57,11 +73,10 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
               </button>
               <button
                 className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
-                type="button"
-                disabled={isUpdating}
-                onClick={onSave}
+                type="submit"
+                disabled={isPending}
               >
-                {isUpdating ? "Updating..." : "Update note"}
+                {isPending ? "Creating..." : "Create note"}
               </button>
             </div>
           </div>
@@ -70,5 +85,3 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
     </div>
   );
 }
-
-export default EditNoteModal;

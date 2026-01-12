@@ -24,17 +24,17 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @GetMapping
+    @GetMapping()
     public List<Note> getAllNotesFromUser(Authentication authentication){
         String username = authentication.getName();
 
         return noteService.getAllNotesFromUser(username);
     }
 
-    @GetMapping("/{id}")
-    public Note getNoteById(@PathVariable Long id){
+    @GetMapping("/{noteId}")
+    public Note getNoteById(@PathVariable Long noteId){
 
-        return noteService.getNoteById(id);
+        return noteService.getNoteById(noteId);
 
     }
     
