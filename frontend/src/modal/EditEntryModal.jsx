@@ -1,5 +1,5 @@
 
-function EditEntryModal({ isOpen, onClose, entryData, onChange, onSave, isUpdating = false }) {
+function EditEntryModal({ isOpen, onClose, entryData, onChange, onAnalyze, isUpdating = false }) {
   if (!isOpen) return null;
 
   return (
@@ -11,7 +11,7 @@ function EditEntryModal({ isOpen, onClose, entryData, onChange, onSave, isUpdati
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Edit entry</p>
             <h2 className="text-xl font-semibold text-slate-900">Update your entry</h2>
-            <p className="text-sm text-slate-500">Adjust the title or text and save your changes.</p>
+            <p className="text-sm text-slate-500">Adjust the title or text and analyze your changes.</p>
           </div>
           <button
             type="button"
@@ -49,7 +49,7 @@ function EditEntryModal({ isOpen, onClose, entryData, onChange, onSave, isUpdati
                 className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
                 type="button"
                 disabled={isUpdating}
-                onClick={onSave}
+                onClick={onAnalyze}
               >
                 {isUpdating ? "Updating..." : "Update entry"}
               </button>

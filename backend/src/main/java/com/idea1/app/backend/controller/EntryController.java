@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.idea1.app.backend.model.Entry;
 import com.idea1.app.backend.service.EntryService;
@@ -39,7 +40,7 @@ public class EntryController {
     }
     
     @PostMapping
-    public ResponseEntity<Entry> createEntry(@RequestBody Entry entry, Authentication authentication){
+    public ResponseEntity<Entry> createEntry(@Valid @RequestBody Entry entry, Authentication authentication){
         String username = authentication.getName();
         System.out.println("the user: " + username + " is trying to access the controller");
         Entry newEntry = entryService.createEntry(entry, username);
@@ -49,7 +50,7 @@ public class EntryController {
     }
 
     @PutMapping("/{entryId}")
-    public ResponseEntity<Entry> updateEntry(@PathVariable Long entryId, @RequestBody Entry updatedData, Authentication authentication){
+    public ResponseEntity<Entry> updateEntry(@PathVariable Long entryId, @Valid @RequestBody Entry updatedData, Authentication authentication){
         String username = authentication.getName();
         Entry updatedEntry = entryService.updateEntry(entryId, updatedData, username);
 

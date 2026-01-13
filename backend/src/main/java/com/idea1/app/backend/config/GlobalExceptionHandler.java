@@ -1,9 +1,14 @@
 package com.idea1.app.backend.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -122,7 +127,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
-
     /**
      * Handles any other unexpected exceptions
      * Returns HTTP 500 Internal Server Error
@@ -145,5 +149,31 @@ public class GlobalExceptionHandler {
         
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-}
 
+    // /**
+    //  * Handles validation errors from @Valid annotation
+    //  * Returns HTTP 400 Bad Request with field-specific error messages
+    //  */
+    // @ExceptionHandler(MethodArgumentNotValidException.class)
+    // public ResponseEntity<ErrorResponse> handleValidationException(
+    //         MethodArgumentNotValidException ex, WebRequest request) {
+        
+    //     // Collect all field errors into a readable message
+    //     StringBuilder message = new StringBuilder("Validation failed: ");
+    //     for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+    //         message.append(error.getField())
+    //             .append(" - ")
+    //             .append(error.getDefaultMessage())
+    //             .append("; ");
+    //     }
+        
+    //     ErrorResponse errorResponse = new ErrorResponse(
+    //         HttpStatus.BAD_REQUEST.value(),
+    //         "Bad Request",
+    //         message.toString(),
+    //         request.getDescription(false).replace("uri=", "")
+    //     );
+        
+    //     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    // }
+}

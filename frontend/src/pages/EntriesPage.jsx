@@ -29,7 +29,14 @@ function EntriesPage() {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [viewingEntry, setViewingEntry] = useState(null);
 
-  const handleSaveEntry = () => {
+  const handleAnalyzeEntry = () => {
+
+    // Validate before sending
+    if (!entryData.title?.trim() || !entryData.content?.trim()) {
+        alert("Please fill in both title and content before analyzing.");
+        return;
+    }
+    
     createEntry(entryData);
     setEntryData({ title: "", content: ""}); 
   };
@@ -82,7 +89,7 @@ function EntriesPage() {
               Entries
             </h1>
             <p className="text-slate-600 mt-1">
-              Your entries at a glance. Add, refine, and keep things moving.
+              Your entries at a glance. Try writing an entry and have it analyzed by AI.
             </p>
           </div>
         </header>
@@ -190,7 +197,7 @@ function EntriesPage() {
           >
             <h2 className="text-xl font-semibold">Quick capture</h2>
             <p className="text-sm text-slate-500">
-              Add a new entry to your collection.
+              Add a new entry to your collection and click "Analyze" when you're done.
             </p>
             <form className="mt-4 flex flex-col gap-3">
               <input
@@ -210,10 +217,10 @@ function EntriesPage() {
                 <button
                   className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
                   type="button"
-                  onClick={handleSaveEntry}
+                  onClick={handleAnalyzeEntry}
                   disabled={isPending}
                 >
-                  {isPending ? "Saving..." : "Save entry"}
+                  {isPending ? "Analyzing..." : "Analyze"}
                 </button>
                 <button
                   className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
@@ -233,7 +240,7 @@ function EntriesPage() {
           entryData={editEntryData}
           onChange={setEditEntryData}
           isUpdating={isUpdating}
-          onSave={() => 
+          onAnalyze={() => 
             updateEntry(
               { entryId: editingId, updatedData: editEntryData },
               { onSuccess: () => setIsEditOpen(false)}

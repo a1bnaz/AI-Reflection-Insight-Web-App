@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import jakarta.validation.Valid;
 
 import com.idea1.app.backend.model.User;
 import com.idea1.app.backend.service.UserService;
@@ -29,12 +30,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody User user){
+    public AuthResponse register(/*@Valid*/ @RequestBody User user){
         return userService.register(user);
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody User user){
+    public AuthResponse login(/*@Valid*/ @RequestBody User user){
         return userService.verify(user);
     }
 }

@@ -14,7 +14,7 @@ export function useCreateEntry(){
             queryClient.invalidateQueries({queryKey : ["entries"] });
         },
         onError: (error) => {
-            console.error("Create entry failed:", error.response?.data || error.message); // Debug log
+            alert(error.response?.data?.message || "failed to create entry. please fill in all required fields.");
         }
     })
 }
