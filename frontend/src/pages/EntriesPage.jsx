@@ -7,6 +7,7 @@ import { useCreateEntry } from "../hooks/useCreateEntry";
 import { useEntries } from "../hooks/useEntries";
 import { useDeleteEntry } from "../hooks/useDeleteEntry";
 import EditEntryModal from "../modal/EditEntryModal";
+import ViewEntryModal from "../modal/ViewEntryModal";
 import { formatEntryTimestamp } from "../utils/formatEntryTimestamp";
 
 
@@ -22,13 +23,15 @@ function EntriesPage() {
   const [editingId, setEditingId] = useState(null);
   
   const { data: entries = [], isLoading, isError } = useEntries();
-  const [entryData, setEntryData] = useState({ title: "", content: "", tag: ""});
+  const [entryData, setEntryData] = useState({ title: "", content: ""});
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editEntryData, setEditEntryData] = useState({ title: "", content: "", tag: ""});
+  const [editEntryData, setEditEntryData] = useState({ title: "", content: ""});
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [viewingEntry, setViewingEntry] = useState(null);
 
   const handleSaveEntry = () => {
     createEntry(entryData);
-    setEntryData({ title: "", content: "", tag: ""}); 
+    setEntryData({ title: "", content: ""}); 
   };
 
   const openEditModal = (entry) => {
@@ -37,9 +40,13 @@ function EntriesPage() {
     setEditEntryData({
       title: entry.title || "",
       content: entry.content || "",
-      tag: entry.tag || "",
     });
     setIsEditOpen(true);
+  };
+
+  const openViewModal = (entry) => {
+    setViewingEntry(entry);
+    setIsViewOpen(true);
   };
 
 // used when the 'create your first entry' button is clicked' and it scrolls down to the 'quick capture' section and highlights the border for a short bit
@@ -96,12 +103,6 @@ function EntriesPage() {
                   placeholder="Search entries"
                   type="search"
                 />
-                <select className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none sm:w-40">
-                  <option>All tags</option>
-                  <option>Work</option>
-                  <option>Personal</option>
-                  <option>Ideas</option>
-                </select>
               </div>
             </div>
 
@@ -127,10 +128,7 @@ function EntriesPage() {
                     key={entry.id}
                     className="group relative rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:shadow-md"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600 shadow-sm">
-                        {entry.tag || "Untagged"}
-                      </p>
+                    <div className="flex items-center justify-end gap-2">
                       <span className="text-xs text-slate-500">
                         {formatEntryTimestamp(entry.updatedAt)}
                       </span>
@@ -142,6 +140,13 @@ function EntriesPage() {
                       {entry.content}
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-sm text-slate-600 opacity-0 transition group-hover:opacity-100">
+                      <button
+                        className="rounded-full border border-slate-200 px-3 py-1 hover:bg-white cursor-pointer"
+                        type="button"
+                        onClick={() => openViewModal(entry)}
+                      >
+                        View
+                      </button>
                       <button
                         className="rounded-full border border-slate-200 px-3 py-1 hover:bg-white cursor-pointer"
                         type="button"
@@ -202,15 +207,6 @@ function EntriesPage() {
                 onChange={(e) => setEntryData({...entryData, content: e.target.value})}
               />
               <div className="flex flex-wrap items-center gap-2">
-                <select className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-                value={entryData.tag}
-                onChange={(e) => setEntryData({...entryData, tag: e.target.value})}
-                >
-                  <option>Tag</option>
-                  <option>Work</option>
-                  <option>Personal</option>
-                  <option>Ideas</option>
-                </select>
                 <button
                   className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
                   type="button"
@@ -222,7 +218,7 @@ function EntriesPage() {
                 <button
                   className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   type="button"
-                  onClick={() => setEntryData({ title: "", content: "", tag: ""})}
+                  onClick={() => setEntryData({ title: "", content: ""})}
                 >
                   Clear
                 </button>
@@ -243,6 +239,11 @@ function EntriesPage() {
               { onSuccess: () => setIsEditOpen(false)}
             )
           }
+        />
+        <ViewEntryModal
+          isOpen={isViewOpen}
+          onClose={() => setIsViewOpen(false)}
+          entry={viewingEntry}
         />
     </div>
   );

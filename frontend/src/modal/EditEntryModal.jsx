@@ -11,7 +11,7 @@ function EditEntryModal({ isOpen, onClose, entryData, onChange, onSave, isUpdati
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Edit entry</p>
             <h2 className="text-xl font-semibold text-slate-900">Update your entry</h2>
-            <p className="text-sm text-slate-500">Adjust the title, text, or tag and save your changes.</p>
+            <p className="text-sm text-slate-500">Adjust the title or text and save your changes.</p>
           </div>
           <button
             type="button"
@@ -37,16 +37,6 @@ function EditEntryModal({ isOpen, onClose, entryData, onChange, onSave, isUpdati
             onChange={(e) => onChange({ ...entryData, content: e.target.value })}
           />
           <div className="flex flex-wrap items-center gap-2">
-            <select
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-              value={entryData.tag}
-              onChange={(e) => onChange({ ...entryData, tag: e.target.value })}
-            >
-              <option>Tag</option>
-              <option>Work</option>
-              <option>Personal</option>
-              <option>Ideas</option>
-            </select>
             <div className="ml-auto flex gap-2">
               <button
                 className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"

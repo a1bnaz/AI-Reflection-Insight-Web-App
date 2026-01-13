@@ -95,7 +95,6 @@ public class EntryService {
 
         entry.setTitle(updatedData.getTitle());
         entry.setContent(updatedData.getContent());
-        entry.setTag(updatedData.getTag());
         
 
         return entryRepo.save(entry);

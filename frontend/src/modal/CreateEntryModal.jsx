@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useCreateEntry } from "../hooks/useCreateEntry";
 
 export function CreateEntryModal ({ isOpen, onClose }) {
-  const [entryData, setEntryData] = useState({ title: "", content: "", tag: "" });
+  const [entryData, setEntryData] = useState({ title: "", content: ""});
   const { mutate: createEntry, isPending } = useCreateEntry();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     createEntry(entryData, {
       onSuccess: () => {
-        setEntryData({ title: "", content: "", tag: "" });
+        setEntryData({ title: "", content: ""});
         onClose();
       },
     });
@@ -53,16 +53,6 @@ export function CreateEntryModal ({ isOpen, onClose }) {
             onChange={(e) => setEntryData({ ...entryData, content: e.target.value })}
           />
           <div className="flex flex-wrap items-center gap-2">
-            <select
-              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-              value={entryData.tag}
-              onChange={(e) => setEntryData({ ...entryData, tag: e.target.value })}
-            >
-              <option value="">Tag</option>
-              <option>Work</option>
-              <option>Personal</option>
-              <option>Ideas</option>
-            </select>
             <div className="ml-auto flex gap-2">
               <button
                 className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"

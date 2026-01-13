@@ -3,7 +3,6 @@ package com.idea1.app.backend.config;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -35,7 +34,7 @@ public class DataSeeder {
             User david = userRepo.save(new User("david", passwordEncoder.encode("123")));
             
             System.out.println("seeding temporary entry data...");
-            Entry testEntry = new Entry("my first entry", "this is a test entry created by the seeder", "Personal");
+            Entry testEntry = new Entry("my first entry", "this is a test entry created by the seeder");
             testEntry.setUser(albert);
             entryRepo.save(testEntry);
 
