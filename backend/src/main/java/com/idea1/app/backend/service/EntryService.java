@@ -1,6 +1,7 @@
 package com.idea1.app.backend.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.idea1.app.backend.config.GlobalExceptionHandler.ForbiddenException;
 import com.idea1.app.backend.config.GlobalExceptionHandler.ResourceNotFoundException;
+import com.idea1.app.backend.dto.CreateEntryRequest;
+import com.idea1.app.backend.dto.EntryResponse;
 import com.idea1.app.backend.model.Entry;
 import com.idea1.app.backend.model.User;
 import com.idea1.app.backend.repository.EntryRepo;
@@ -40,31 +43,53 @@ public class EntryService {
     @Autowired
     private UserRepo userRepo;
 
-    // 0. get entry (by entry Id)
-    public Entry getEntryById(Long entryId){
+    // Helper method to convert Entry entity to EntryResponse DTO
+    private EntryResponse convertToEntryResponse(Entry entry) {
+        EntryResponse response = new EntryResponse();
+        response.setId(entry.getId());
+        response.setTitle(entry.getTitle());
+        response.setContent(entry.getContent());
+        response.setAiSummary(entry.getAiSummary());
+        response.setAiInsights(entry.getAiInsights());
+        response.setAiThemes(entry.getAiThemes());
+        response.setAiTone(entry.getAiTone());
+        response.setAiGeneratedAt(entry.getAiGeneratedAt());
+        response.setCreatedAt(entry.getCreatedAt());
+        response.setUpdatedAt(entry.getUpdatedAt());
+        return response;
+    }
 
-        return entryRepo.findById(entryId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    // 0. get entry (by entry Id)
+    public EntryResponse getEntryById(Long entryId){
+
+        return entryRepo.findById(entryId)
+            .map(this::convertToEntryResponse)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         
     }
 
     // 1. get all entries (filtered by user)
-    public List<Entry> getAllEntriesFromUser(String username){
+    public List<EntryResponse> getAllEntriesFromUser(String username){
         // flow:
         // 1. use the username to find the User object
         // 2. ask the repo for: findAllByUser(user)
         User user = userRepo.findByUsername(username);
 
-        return entryRepo.findByUserId(user.getId());
+        return entryRepo.findByUserId(user.getId())
+            .stream()
+            .map(this::convertToEntryResponse)
+            .collect(Collectors.toList());
     }
 
     // 2. create entry
     // if something goes wrong halfway through the method, spring will "roll back" the changes so your database doesn't end up with partial or corrupted data
     @Transactional
-    public Entry createEntry(Entry entry, String username){
+    public EntryResponse createEntry(CreateEntryRequest request, String username){
         // flow:
         // 1. find the User from the DB using the username
-        // 2. set the User on the entry object: entry.setUser(user)
-        // 3. save and return
+        // 2. create a new Entry entity from the request
+        // 3. set the User on the entry object
+        // 4. save and return as DTO
 
         User user = userRepo.findByUsername(username);
 
@@ -72,15 +97,19 @@ public class EntryService {
             throw new ResourceNotFoundException("user not found");
         }
 
+        Entry entry = new Entry();
+        entry.setTitle(request.getTitle());
+        entry.setContent(request.getContent());
         entry.setUser(user);
 
-        return entryRepo.save(entry);
+        Entry savedEntry = entryRepo.save(entry);
+        return convertToEntryResponse(savedEntry);
 
     }
 
     // 3. update entry (with security check)
     @Transactional
-    public Entry updateEntry(Long entryId, Entry updatedData, String username){
+    public EntryResponse updateEntry(Long entryId, CreateEntryRequest updatedData, String username){
         // flow:
         // 1. find the existing entry by ID
         // 2. check: does entry.getUser().getUsername() match the 'username' parameter?
@@ -96,8 +125,8 @@ public class EntryService {
         entry.setTitle(updatedData.getTitle());
         entry.setContent(updatedData.getContent());
         
-
-        return entryRepo.save(entry);
+        Entry savedEntry = entryRepo.save(entry);
+        return convertToEntryResponse(savedEntry);
 
     }
 

@@ -4,14 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { useEntries } from "../hooks/useEntries";
 import { formatEntryTimestamp } from "../utils/formatEntryTimestamp";
 import { CreateEntryModal } from "../modal/CreateEntryModal";
+import ViewEntryModal from "../modal/ViewEntryModal";
 
 
 function Dashboard() {
   const [isAddEntryModalOpen, setIsAddEntryModalOpen] = useState(false);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [viewingEntry, setViewingEntry] = useState(null);
   const currentUser = useAuthStore((state) => state.user);
   const navigate = useNavigate();
 
-    const { data: entries = [], isLoading, isError } = useEntries();
+  const { data: entries = [], isLoading, isError } = useEntries();
+
+  const openViewModal = (entry) => {
+    setViewingEntry(entry);
+    setIsViewOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
@@ -50,10 +58,11 @@ function Dashboard() {
           </div>
 
           <div className="space-y-2">
-            {entries.slice(0, 3).map((entry) => (
+            {entries.slice(0, 5).map((entry) => (
               <div
                 key={entry.id}
                 className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 p-3 hover:bg-slate-100 transition cursor-pointer"
+                onClick={() => openViewModal(entry)}
               >
                 <span className="font-medium text-slate-900">{entry.title}</span>
                 <span className="text-xs text-slate-500">
@@ -77,6 +86,11 @@ function Dashboard() {
       <CreateEntryModal
         isOpen={isAddEntryModalOpen}
         onClose={() => setIsAddEntryModalOpen(false)}
+      />
+      <ViewEntryModal
+        isOpen={isViewOpen}
+        onClose={() => setIsViewOpen(false)}
+        entry={viewingEntry}
       />
     </div>
   );

@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
-import com.idea1.app.backend.model.Entry;
+import com.idea1.app.backend.dto.CreateEntryRequest;
+import com.idea1.app.backend.dto.EntryResponse;
 import com.idea1.app.backend.service.EntryService;
 
 @RestController
@@ -26,33 +27,33 @@ public class EntryController {
     private EntryService entryService;
 
     @GetMapping()
-    public List<Entry> getAllEntriesFromUser(Authentication authentication){
+    public List<EntryResponse> getAllEntriesFromUser(Authentication authentication){
         String username = authentication.getName();
 
         return entryService.getAllEntriesFromUser(username);
     }
 
     @GetMapping("/{entryId}")
-    public Entry getEntryById(@PathVariable Long entryId){
+    public EntryResponse getEntryById(@PathVariable Long entryId){
 
         return entryService.getEntryById(entryId);
 
     }
     
     @PostMapping
-    public ResponseEntity<Entry> createEntry(@Valid @RequestBody Entry entry, Authentication authentication){
+    public ResponseEntity<EntryResponse> createEntry(@Valid @RequestBody CreateEntryRequest request, Authentication authentication){
         String username = authentication.getName();
         System.out.println("the user: " + username + " is trying to access the controller");
-        Entry newEntry = entryService.createEntry(entry, username);
+        EntryResponse newEntry = entryService.createEntry(request, username);
         System.out.println("new entry is being created");
 
         return ResponseEntity.ok(newEntry);
     }
 
     @PutMapping("/{entryId}")
-    public ResponseEntity<Entry> updateEntry(@PathVariable Long entryId, @Valid @RequestBody Entry updatedData, Authentication authentication){
+    public ResponseEntity<EntryResponse> updateEntry(@PathVariable Long entryId, @Valid @RequestBody CreateEntryRequest updatedData, Authentication authentication){
         String username = authentication.getName();
-        Entry updatedEntry = entryService.updateEntry(entryId, updatedData, username);
+        EntryResponse updatedEntry = entryService.updateEntry(entryId, updatedData, username);
 
         return ResponseEntity.ok(updatedEntry);
     }
