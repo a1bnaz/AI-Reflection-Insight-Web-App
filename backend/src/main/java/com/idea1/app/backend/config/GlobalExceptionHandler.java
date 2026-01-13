@@ -36,7 +36,7 @@ import com.idea1.app.backend.dto.ErrorResponse;
 public class GlobalExceptionHandler {
 
     /**
-     * Custom exception thrown when a resource (Note, User, etc.) is not found
+     * Custom exception thrown when a resource (Entry, User, etc.) is not found
      * This provides a semantic, purpose-built exception for resource lookups
      */
     public static class ResourceNotFoundException extends RuntimeException {
@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles when a resource (Note, Post, etc.) is not found
+     * Handles when a resource (Entry, Post, etc.) is not found
      * Returns HTTP 404 Not Found
      */
     @ExceptionHandler(ResourceNotFoundException.class)

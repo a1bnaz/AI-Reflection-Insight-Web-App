@@ -15,8 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Note")
-public class Note {
+@Table(name = "Entry")
+public class Entry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,9 +30,9 @@ public class Note {
 
     /*
     - @ManyToOne means that many listings can belong to one user (many-to-one relationship).
-    - tells JPA to create a foriegn key column named "user_id" in the Note table.
-    links each note to the user that created it.
-    - "nullable = false" means that every note *must* have a user associated with it.
+    - tells JPA to create a foriegn key column named "user_id" in the Entry table.
+    links each entry to the user that created it.
+    - "nullable = false" means that every entry *must* have a user associated with it.
     */
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -44,9 +44,9 @@ public class Note {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Note(){}
+    public Entry(){}
 
-    public Note(String title, String content, String tag) {
+    public Entry(String title, String content, String tag) {
         this.title = title;
         this.content = content;
         this.tag = tag;

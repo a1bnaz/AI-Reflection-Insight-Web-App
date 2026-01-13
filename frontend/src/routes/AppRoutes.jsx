@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
-import NotesPage from "../pages/NotesPage";
+import EntriesPage from "../pages/EntriesPage";
 
 import Dashboard from "../pages/Dashboard";
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -21,8 +21,8 @@ function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         {/* dashboard page */}
         <Route path="/dashboard" element={<Dashboard />} />
-        {/* notes page */}
-        <Route path="notes" element={<NotesPage/>}/>
+        {/* entries page */}
+        <Route path="entries" element={<EntriesPage/>}/>
 
 
 

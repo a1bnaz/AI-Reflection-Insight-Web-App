@@ -1,5 +1,5 @@
 
-function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating = false }) {
+function EditEntryModal({ isOpen, onClose, entryData, onChange, onSave, isUpdating = false }) {
   if (!isOpen) return null;
 
   return (
@@ -9,8 +9,8 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
       <div className="relative w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-100">
         <header className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Edit note</p>
-            <h2 className="text-xl font-semibold text-slate-900">Update your note</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Edit entry</p>
+            <h2 className="text-xl font-semibold text-slate-900">Update your entry</h2>
             <p className="text-sm text-slate-500">Adjust the title, text, or tag and save your changes.</p>
           </div>
           <button
@@ -27,20 +27,20 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
             placeholder="Title"
             type="text"
-            value={noteData.title}
-            onChange={(e) => onChange({ ...noteData, title: e.target.value })}
+            value={entryData.title}
+            onChange={(e) => onChange({ ...entryData, title: e.target.value })}
           />
           <textarea
             className="min-h-[120px] w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
-            placeholder="Update your note..."
-            value={noteData.content}
-            onChange={(e) => onChange({ ...noteData, content: e.target.value })}
+            placeholder="Update your entry..."
+            value={entryData.content}
+            onChange={(e) => onChange({ ...entryData, content: e.target.value })}
           />
           <div className="flex flex-wrap items-center gap-2">
             <select
               className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-              value={noteData.tag}
-              onChange={(e) => onChange({ ...noteData, tag: e.target.value })}
+              value={entryData.tag}
+              onChange={(e) => onChange({ ...entryData, tag: e.target.value })}
             >
               <option>Tag</option>
               <option>Work</option>
@@ -61,7 +61,7 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
                 disabled={isUpdating}
                 onClick={onSave}
               >
-                {isUpdating ? "Updating..." : "Update note"}
+                {isUpdating ? "Updating..." : "Update entry"}
               </button>
             </div>
           </div>
@@ -71,4 +71,4 @@ function EditNoteModal({ isOpen, onClose, noteData, onChange, onSave, isUpdating
   );
 }
 
-export default EditNoteModal;
+export default EditEntryModal;

@@ -10,9 +10,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.idea1.app.backend.config.GlobalExceptionHandler.ForbiddenException;
 import com.idea1.app.backend.config.GlobalExceptionHandler.ResourceNotFoundException;
-import com.idea1.app.backend.model.Note;
+import com.idea1.app.backend.model.Entry;
 import com.idea1.app.backend.model.User;
-import com.idea1.app.backend.repository.NoteRepo;
+import com.idea1.app.backend.repository.EntryRepo;
 import com.idea1.app.backend.repository.UserRepo;
 
 /*
@@ -32,92 +32,87 @@ import com.idea1.app.backend.repository.UserRepo;
 */
 
 @Service
-public class NoteService {
+public class EntryService {
 
     @Autowired
-    private NoteRepo noteRepo;
+    private EntryRepo entryRepo;
 
     @Autowired
     private UserRepo userRepo;
 
-    // 0. get note (by note Id)
-    public Note getNoteById(Long noteId){
+    // 0. get entry (by entry Id)
+    public Entry getEntryById(Long entryId){
 
-        return noteRepo.findById(noteId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return entryRepo.findById(entryId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         
     }
 
-    // 1. get all notes (filtered by user)
-    public List<Note> getAllNotesFromUser(String username){
+    // 1. get all entries (filtered by user)
+    public List<Entry> getAllEntriesFromUser(String username){
         // flow:
         // 1. use the username to find the User object
         // 2. ask the repo for: findAllByUser(user)
         User user = userRepo.findByUsername(username);
 
-        return noteRepo.findByUserId(user.getId());
+        return entryRepo.findByUserId(user.getId());
     }
 
-    // 2. create note
+    // 2. create entry
     // if something goes wrong halfway through the method, spring will "roll back" the changes so your database doesn't end up with partial or corrupted data
     @Transactional
-    public Note createNote(Note note, String username){
+    public Entry createEntry(Entry entry, String username){
         // flow:
         // 1. find the User from the DB using the username
-        // 2. set the User on the note object: note.setUser(user)
+        // 2. set the User on the entry object: entry.setUser(user)
         // 3. save and return
-        System.out.println("1. starting createNote with username: " + username);
+
         User user = userRepo.findByUsername(username);
-        System.out.println("2. found user: " + (user != null ? user.getUsername() : "NULL"));
 
         if (user == null) {
             throw new ResourceNotFoundException("user not found");
         }
 
-        System.out.println("3. setting user on note");
-        note.setUser(user);
+        entry.setUser(user);
 
-         System.out.println("4. About to save note. Note ID before save: " + note.getId());
-        System.out.println("5. Note data - Title: " + note.getTitle() + ", Content: " + note.getContent() + ", User ID: " + note.getUser().getId() + "and the noteId is: " + note.getId());
-
-        return noteRepo.save(note);
+        return entryRepo.save(entry);
 
     }
 
-    // 3. update note (with security check)
+    // 3. update entry (with security check)
     @Transactional
-    public Note updateNote(Long noteId, Note updatedData, String username){
+    public Entry updateEntry(Long entryId, Entry updatedData, String username){
         // flow:
-        // 1. find the existing note by ID
-        // 2. check: does note.getUser().getUsername() match the 'username' parameter?
+        // 1. find the existing entry by ID
+        // 2. check: does entry.getUser().getUsername() match the 'username' parameter?
         // 3. if NO: throw a 403 forbidden exception
         // 4. if yes: update fields and save
-        Note note = noteRepo.findById(noteId)
-            .orElseThrow(() -> new ResourceNotFoundException("Note not found"));
+        Entry entry = entryRepo.findById(entryId)
+            .orElseThrow(() -> new ResourceNotFoundException("Entry not found"));
 
-        if (!note.getUser().getUsername().equals(username)){
-            throw new ForbiddenException("you don't have permission to update this note");
+        if (!entry.getUser().getUsername().equals(username)){
+            throw new ForbiddenException("you don't have permission to update this entry");
         }
 
-        note.setTitle(updatedData.getTitle());
-        note.setContent(updatedData.getContent());
-        note.setTag(updatedData.getTag());
+        entry.setTitle(updatedData.getTitle());
+        entry.setContent(updatedData.getContent());
+        entry.setTag(updatedData.getTag());
         
 
-        return noteRepo.save(note);
+        return entryRepo.save(entry);
 
     }
 
-    // 4. delete note (with security check)
+    // 4. delete entry (with security check)
     @Transactional
-    public void deleteNote(Long noteId, String username){
+    public void deleteEntry(Long entryId, String username){
         // similar logic to update: find -> check ownership -> delete
-        Note note = noteRepo.findById(noteId).orElseThrow(() -> new ResourceNotFoundException("Note not found"));
+        Entry entry = entryRepo.findById(entryId).orElseThrow(() -> new ResourceNotFoundException("Entry not found"));
 
-        if(!note.getUser().getUsername().equals(username)){
-            throw new ForbiddenException("you don't have permission to update this note");
+        if(!entry.getUser().getUsername().equals(username)){
+            throw new ForbiddenException("you don't have permission to update this entry");
         }
 
-        noteRepo.deleteById(noteId);
+        entryRepo.deleteById(entryId);
     }
     
 }

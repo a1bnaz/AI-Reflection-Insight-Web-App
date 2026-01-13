@@ -1,48 +1,48 @@
 
 import { useAuthStore } from "../store/authStore";
-import { useUpdateNote } from "../hooks/useUpdateNote";
+import { useUpdateEntry } from "../hooks/useUpdateEntry";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { useCreateNote } from "../hooks/useCreateNote";
-import { useNotes } from "../hooks/useNotes";
-import { useDeleteNote } from "../hooks/useDeleteNote";
-import EditNoteModal from "../modal/EditNoteModal";
-import { formatNoteTimestamp } from "../utils/formatNoteTimestamp";
+import { useCreateEntry } from "../hooks/useCreateEntry";
+import { useEntries } from "../hooks/useEntries";
+import { useDeleteEntry } from "../hooks/useDeleteEntry";
+import EditEntryModal from "../modal/EditEntryModal";
+import { formatEntryTimestamp } from "../utils/formatEntryTimestamp";
 
 
-function NotesPage() {
+function EntriesPage() {
   const navigate = useNavigate();
   const quickCaptureRef = useRef(null);
   const [isHighlighting, setIsHighlighting] = useState(false);
   const highlightTimeoutRef = useRef(null);
 
-  const {mutate: createNote, isPending } = useCreateNote();
-  const { mutate: deleteNote, isPending: isDeleting } = useDeleteNote();
-  const { mutate: updateNote, isPending: isUpdating } = useUpdateNote();
+  const {mutate: createEntry, isPending } = useCreateEntry();
+  const { mutate: deleteEntry, isPending: isDeleting } = useDeleteEntry();
+  const { mutate: updateEntry, isPending: isUpdating } = useUpdateEntry();
   const [editingId, setEditingId] = useState(null);
   
-  const { data: notes = [], isLoading, isError } = useNotes();
-  const [noteData, setNoteData] = useState({ title: "", content: "", tag: ""});
+  const { data: entries = [], isLoading, isError } = useEntries();
+  const [entryData, setEntryData] = useState({ title: "", content: "", tag: ""});
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [editNoteData, setEditNoteData] = useState({ title: "", content: "", tag: ""});
+  const [editEntryData, setEditEntryData] = useState({ title: "", content: "", tag: ""});
 
-  const handleSaveNote = () => {
-    createNote(noteData);
-    setNoteData({ title: "", content: "", tag: ""}); 
+  const handleSaveEntry = () => {
+    createEntry(entryData);
+    setEntryData({ title: "", content: "", tag: ""}); 
   };
 
-  const openEditModal = (note) => {
-    setEditingId(note.id);
+  const openEditModal = (entry) => {
+    setEditingId(entry.id);
 
-    setEditNoteData({
-      title: note.title || "",
-      content: note.content || "",
-      tag: note.tag || "",
+    setEditEntryData({
+      title: entry.title || "",
+      content: entry.content || "",
+      tag: entry.tag || "",
     });
     setIsEditOpen(true);
   };
 
-// used when the 'create your first note' button is clicked' and it scrolls down to the 'quick capture' section and highlights the border for a short bit
+// used when the 'create your first entry' button is clicked' and it scrolls down to the 'quick capture' section and highlights the border for a short bit
   const scrollToQuickCapture = () => {
     quickCaptureRef.current?.scrollIntoView({ behavior: "smooth" });
     setIsHighlighting(true);
@@ -72,28 +72,28 @@ function NotesPage() {
               ← Back to Dashboard
             </button>
             <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
-              Notes
+              Entries
             </h1>
             <p className="text-slate-600 mt-1">
-              Your notes at a glance. Add, refine, and keep things moving.
+              Your entries at a glance. Add, refine, and keep things moving.
             </p>
           </div>
         </header>
 
         <section className="mt-10 grid gap-6 lg:grid-cols-[1.2fr,0.8fr]">
-            {/* YOUR NOTES container */}
+            {/* YOUR ENTRIES container */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Your notes</h2>
+                <h2 className="text-xl font-semibold">Your entries</h2>
                 <p className="text-sm text-slate-500">
-                  Quickly scan, filter, and jump into any note.
+                  Quickly scan, filter, and jump into any entry.
                 </p>
               </div>
               <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
                 <input
                   className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
-                  placeholder="Search notes"
+                  placeholder="Search entries"
                   type="search"
                 />
                 <select className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none sm:w-40">
@@ -108,51 +108,51 @@ function NotesPage() {
             {/* LOADING STATE */}
             {isLoading && (
               <div className="mt-6 text-center text-slate-500">
-                Loading your notes...
+                Loading your entries...
               </div>
             )}
 
             {/* ERROR STATE */}
             {isError && (
               <div className="mt-6 rounded-lg bg-red-50 p-4 text-red-700">
-                Failed to load notes. Please try again.
+                Failed to load entries. Please try again.
               </div>
             )}
 
-            {/* INDIVIDUAL NOTES */}
-            {!isLoading && !isError && notes.length > 0 && (
+            {/* INDIVIDUAL ENTRIES */}
+            {!isLoading && !isError && entries.length > 0 && (
               <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {notes.map((note) => (
+                {entries.map((entry) => (
                   <article
-                    key={note.id}
+                    key={entry.id}
                     className="group relative rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:shadow-md"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <p className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600 shadow-sm">
-                        {note.tag || "Untagged"}
+                        {entry.tag || "Untagged"}
                       </p>
                       <span className="text-xs text-slate-500">
-                        {formatNoteTimestamp(note.updatedAt)}
+                        {formatEntryTimestamp(entry.updatedAt)}
                       </span>
                     </div>
                     <h3 className="mt-3 text-lg font-semibold text-slate-900">
-                      {note.title}
+                      {entry.title}
                     </h3>
                     <p className="mt-2 line-clamp-3 text-sm text-slate-600">
-                      {note.content}
+                      {entry.content}
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-sm text-slate-600 opacity-0 transition group-hover:opacity-100">
                       <button
                         className="rounded-full border border-slate-200 px-3 py-1 hover:bg-white cursor-pointer"
                         type="button"
-                        onClick={() => openEditModal(note)}
+                        onClick={() => openEditModal(entry)}
                       >
                         Edit
                       </button>
                       <button
                         className="rounded-full border border-rose-100 px-3 py-1 text-rose-600 hover:bg-rose-50 disabled:opacity-50 cursor-pointer"
                         type="button"
-                        onClick={() => deleteNote(note.id)}
+                        onClick={() => deleteEntry(entry.id)}
                         disabled={isDeleting}
                       >
                         Delete
@@ -163,16 +163,16 @@ function NotesPage() {
               </div>
             )}
 
-            {/* EMPTY NOTES PLACEHOLDER */}
-            {!isLoading && !isError && notes.length === 0 && (
+            {/* EMPTY ENTRIES PLACEHOLDER */}
+            {!isLoading && !isError && entries.length === 0 && (
               <div className="mt-6 flex items-center justify-between rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-                <span>You have no notes yet. Create your first one below.</span>
+                <span>You have no entries yet. Create your first one below.</span>
                 <button
                   className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800"
                   type="button"
                   onClick={scrollToQuickCapture}
                 >
-                  Create your first note
+                  Create your first entry
                 </button>
               </div>
             )}
@@ -185,26 +185,26 @@ function NotesPage() {
           >
             <h2 className="text-xl font-semibold">Quick capture</h2>
             <p className="text-sm text-slate-500">
-              Add a new note to your collection.
+              Add a new entry to your collection.
             </p>
             <form className="mt-4 flex flex-col gap-3">
               <input
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
                 placeholder="Title"
                 type="text"
-                value={noteData.title}
-                onChange={(e) => setNoteData({...noteData, title: e.target.value})}
+                value={entryData.title}
+                onChange={(e) => setEntryData({...entryData, title: e.target.value})}
               />
               <textarea
                 className="min-h-[140px] w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
-                placeholder="Write a quick note..."
-                value={noteData.content}
-                onChange={(e) => setNoteData({...noteData, content: e.target.value})}
+                placeholder="Write a quick entry..."
+                value={entryData.content}
+                onChange={(e) => setEntryData({...entryData, content: e.target.value})}
               />
               <div className="flex flex-wrap items-center gap-2">
                 <select className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-                value={noteData.tag}
-                onChange={(e) => setNoteData({...noteData, tag: e.target.value})}
+                value={entryData.tag}
+                onChange={(e) => setEntryData({...entryData, tag: e.target.value})}
                 >
                   <option>Tag</option>
                   <option>Work</option>
@@ -214,15 +214,15 @@ function NotesPage() {
                 <button
                   className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
                   type="button"
-                  onClick={handleSaveNote}
+                  onClick={handleSaveEntry}
                   disabled={isPending}
                 >
-                  {isPending ? "Saving..." : "Save note"}
+                  {isPending ? "Saving..." : "Save entry"}
                 </button>
                 <button
                   className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   type="button"
-                  onClick={() => setNoteData({ title: "", content: "", tag: ""})}
+                  onClick={() => setEntryData({ title: "", content: "", tag: ""})}
                 >
                   Clear
                 </button>
@@ -231,15 +231,15 @@ function NotesPage() {
           </div>
         </section>
       </div>
-        <EditNoteModal
+        <EditEntryModal
           isOpen={isEditOpen}
           onClose={() => setIsEditOpen(false)}
-          noteData={editNoteData}
-          onChange={setEditNoteData}
+          entryData={editEntryData}
+          onChange={setEditEntryData}
           isUpdating={isUpdating}
           onSave={() => 
-            updateNote(
-              { noteId: editingId, updatedData: editNoteData },
+            updateEntry(
+              { entryId: editingId, updatedData: editEntryData },
               { onSuccess: () => setIsEditOpen(false)}
             )
           }
@@ -248,4 +248,4 @@ function NotesPage() {
   );
 }
 
-export default NotesPage;
+export default EntriesPage;

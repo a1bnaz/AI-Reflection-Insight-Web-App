@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import api from "../api/axios";
 import { useAuthStore } from "../store/authStore";
 
-export function useNotes() {
+export function useEntries() {
   // return useQuery({
-  //   queryKey: ["notes"],
+  //   queryKey: ["entries"],
   //   queryFn: async () => {
-  //     const response = await api.get("/notes");
+  //     const response = await api.get("/entries");
   //     return response.data;
   //   },
   //   staleTime: 1000 * 60 * 5, // 5 minutes
@@ -15,9 +15,9 @@ export function useNotes() {
   const user = useAuthStore((s) => s.user);
 
   return useQuery({
-    queryKey: ["notes", user?.id || user?.username], // scope cache per user
+    queryKey: ["entries", user?.id || user?.username], // scope cache per user
     queryFn: async () => {
-      const response = await api.get("/notes");
+      const response = await api.get("/entries");
       
       return response.data
     },
