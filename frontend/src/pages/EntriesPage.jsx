@@ -4,6 +4,7 @@ import { useUpdateEntry } from "../hooks/useUpdateEntry";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { useCreateEntry } from "../hooks/useCreateEntry";
+import { useAnalyzeEntry } from "../hooks/useAnalyzeEntry";
 import { useEntries } from "../hooks/useEntries";
 import { useDeleteEntry } from "../hooks/useDeleteEntry";
 import EditEntryModal from "../modal/EditEntryModal";
@@ -17,7 +18,8 @@ function EntriesPage() {
   const [isHighlighting, setIsHighlighting] = useState(false);
   const highlightTimeoutRef = useRef(null);
 
-  const {mutate: createEntry, isPending } = useCreateEntry();
+  const {mutate: createEntry, isPending: isCreating } = useCreateEntry(); // not using 
+  const { mutate: analyzeEntry, isPending: isAnalyzing } = useAnalyzeEntry();
   const { mutate: deleteEntry, isPending: isDeleting } = useDeleteEntry();
   const { mutate: updateEntry, isPending: isUpdating } = useUpdateEntry();
   const [editingId, setEditingId] = useState(null);
@@ -37,8 +39,18 @@ function EntriesPage() {
         return;
     }
     
-    createEntry(entryData);
-    setEntryData({ title: "", content: ""}); 
+    // step 1: create the entry
+    createEntry(entryData, {
+      onSuccess: (newEntry) => {
+        // step 2: analyze the newly created entry
+        analyzeEntry(newEntry.id, {
+          onSuccess: () => {
+            setEntryData({ title: "", content: ""});
+          }
+        });
+      }
+    });
+
   };
 
   const openEditModal = (entry) => {
@@ -218,9 +230,9 @@ function EntriesPage() {
                   className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
                   type="button"
                   onClick={handleAnalyzeEntry}
-                  disabled={isPending}
+                  disabled={isAnalyzing}
                 >
-                  {isPending ? "Analyzing..." : "Analyze"}
+                  {isAnalyzing ? "Analyzing..." : "Analyze"}
                 </button>
                 <button
                   className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
@@ -243,7 +255,11 @@ function EntriesPage() {
           onAnalyze={() => 
             updateEntry(
               { entryId: editingId, updatedData: editEntryData },
-              { onSuccess: () => setIsEditOpen(false)}
+              { onSuccess: () => {
+                analyzeEntry(editingId, {
+                  onSuccess: () => setIsEditOpen(false)
+                });
+              }}
             )
           }
         />

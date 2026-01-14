@@ -1,5 +1,6 @@
 package com.idea1.app.backend.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.idea1.app.backend.config.GlobalExceptionHandler.ForbiddenException;
 import com.idea1.app.backend.config.GlobalExceptionHandler.ResourceNotFoundException;
+import com.idea1.app.backend.dto.AIAnalysisResult;
 import com.idea1.app.backend.dto.CreateEntryRequest;
 import com.idea1.app.backend.dto.EntryResponse;
 import com.idea1.app.backend.model.Entry;
@@ -38,6 +40,9 @@ import com.idea1.app.backend.repository.UserRepo;
 public class EntryService {
 
     @Autowired
+    private AIService aiService;
+
+    @Autowired
     private EntryRepo entryRepo;
 
     @Autowired
@@ -59,7 +64,6 @@ public class EntryService {
         return response;
     }
 
-    // 0. get entry (by entry Id)
     public EntryResponse getEntryById(Long entryId){
 
         return entryRepo.findById(entryId)
@@ -68,11 +72,8 @@ public class EntryService {
         
     }
 
-    // 1. get all entries (filtered by user)
     public List<EntryResponse> getAllEntriesFromUser(String username){
-        // flow:
-        // 1. use the username to find the User object
-        // 2. ask the repo for: findAllByUser(user)
+
         User user = userRepo.findByUsername(username);
 
         return entryRepo.findByUserId(user.getId())
@@ -81,15 +82,8 @@ public class EntryService {
             .collect(Collectors.toList());
     }
 
-    // 2. create entry
-    // if something goes wrong halfway through the method, spring will "roll back" the changes so your database doesn't end up with partial or corrupted data
     @Transactional
     public EntryResponse createEntry(CreateEntryRequest request, String username){
-        // flow:
-        // 1. find the User from the DB using the username
-        // 2. create a new Entry entity from the request
-        // 3. set the User on the entry object
-        // 4. save and return as DTO
 
         User user = userRepo.findByUsername(username);
 
@@ -110,11 +104,7 @@ public class EntryService {
     // 3. update entry (with security check)
     @Transactional
     public EntryResponse updateEntry(Long entryId, CreateEntryRequest updatedData, String username){
-        // flow:
-        // 1. find the existing entry by ID
-        // 2. check: does entry.getUser().getUsername() match the 'username' parameter?
-        // 3. if NO: throw a 403 forbidden exception
-        // 4. if yes: update fields and save
+
         Entry entry = entryRepo.findById(entryId)
             .orElseThrow(() -> new ResourceNotFoundException("Entry not found"));
 
@@ -130,10 +120,9 @@ public class EntryService {
 
     }
 
-    // 4. delete entry (with security check)
     @Transactional
     public void deleteEntry(Long entryId, String username){
-        // similar logic to update: find -> check ownership -> delete
+
         Entry entry = entryRepo.findById(entryId).orElseThrow(() -> new ResourceNotFoundException("Entry not found"));
 
         if(!entry.getUser().getUsername().equals(username)){
@@ -141,6 +130,30 @@ public class EntryService {
         }
 
         entryRepo.deleteById(entryId);
+    }
+
+    public EntryResponse analyzeEntry(Long entryId, String username) throws Exception {
+        Entry entry = entryRepo.findById(entryId).orElseThrow(() -> new RuntimeException("Entry not found"));
+
+        // optional: verify the entry belongs to the user
+        if (!entry.getUser().getUsername().equals(username)){
+            throw new RuntimeException("Unauthorized");
+        }
+
+        // call AIService
+        AIAnalysisResult aiResult = aiService.analyzeEntry(entry.getTitle(), entry.getContent());
+
+        // save AI fields to entry
+        entry.setAiSummary(aiResult.getSummary());
+        entry.setAiInsights(aiResult.getInsight());
+        entry.setAiThemes(aiResult.getThemes());
+        entry.setAiTone(aiResult.getTone());
+        entry.setAiGeneratedAt(LocalDateTime.now());
+
+        entryRepo.save(entry);
+
+        return convertToEntryResponse(entry); // reuse your existing DTO mapping
+
     }
     
 }

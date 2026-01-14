@@ -51,7 +51,7 @@ function EditEntryModal({ isOpen, onClose, entryData, onChange, onAnalyze, isUpd
                 disabled={isUpdating}
                 onClick={onAnalyze}
               >
-                {isUpdating ? "Updating..." : "Update entry"}
+                {isUpdating ? "Reanalyzing..." : "Reanalyze entry"}
               </button>
             </div>
           </div>

@@ -31,7 +31,7 @@ public class SecurityConfig {
 
         http.csrf(customizer -> customizer.disable()); // disable CSRF for stateless JWT authentication
         http.authorizeHttpRequests(request -> request
-            .requestMatchers("/api/register", "/api/login", "/api/").permitAll()
+            .requestMatchers("/api/register", "/api/login", "/test/").permitAll()
             .anyRequest().authenticated()); // all other requests need to be authenticated
         http.formLogin(form -> form.disable()); // disable form login for JWT-based auth
         http.httpBasic(basic -> basic.disable()); // disable basic auth - using JWT only

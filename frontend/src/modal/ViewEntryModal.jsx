@@ -65,32 +65,63 @@ function ViewEntryModal({ isOpen, onClose, entry }) {
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Summary & Insights</h3>
             
             <div className="space-y-4 flex-1">
-              <div className="rounded-lg bg-white/80 p-4 border border-slate-200 min-h-[150px]">
+              {/* AI Summary */}
+              <div className="rounded-lg bg-white/80 p-4 border border-slate-200 min-h-[100px]">
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2 block">
                   AI Summary
                 </label>
-                <p className="text-slate-600 text-sm italic">
-                  AI-generated summary will appear here...
+                <p className="text-slate-700 text-sm">
+                  {entry?.aiSummary ? entry.aiSummary : "No summary yet. Analyze this entry to generate one."}
                 </p>
               </div>
 
-              <div className="rounded-lg bg-white/80 p-4 border border-slate-200 min-h-[150px]">
+              {/* AI Insights */}
+              <div className="rounded-lg bg-white/80 p-4 border border-slate-200 min-h-[100px]">
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2 block">
                   Key Insights
                 </label>
-                <p className="text-slate-600 text-sm italic">
-                  AI-generated insights will appear here...
+                <p className="text-slate-700 text-sm">
+                  {entry?.aiInsights ? entry.aiInsights : "No insights yet. Analyze this entry to generate one."}
                 </p>
               </div>
 
-              <div className="rounded-lg bg-white/80 p-4 border border-slate-200 min-h-[150px]">
+              {/* AI Tone */}
+              <div className="rounded-lg bg-white/80 p-4 border border-slate-200 min-h-[80px]">
                 <label className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2 block">
-                  Sentiment Analysis
+                  Emotional Tone
                 </label>
-                <p className="text-slate-600 text-sm italic">
-                  AI-generated sentiment analysis will appear here...
+                <p className="text-slate-700 text-sm font-medium">
+                  {entry?.aiTone ? entry.aiTone : "No tone analysis yet."}
                 </p>
               </div>
+
+              {/* AI Themes */}
+              <div className="rounded-lg bg-white/80 p-4 border border-slate-200 min-h-[80px]">
+                <label className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2 block">
+                  Themes
+                </label>
+                {entry?.aiThemes && entry.aiThemes.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {entry.aiThemes.map((theme, index) => (
+                      <span
+                        key={index}
+                        className="inline-block rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700"
+                      >
+                        {theme}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-slate-600 text-sm italic">No themes identified yet.</p>
+                )}
+              </div>
+
+              {/* AI Generated At */}
+              {entry?.aiGeneratedAt && (
+                <div className="text-xs text-slate-500">
+                  Analysis generated: {new Date(entry.aiGeneratedAt).toLocaleString()}
+                </div>
+              )}
             </div>
           </div>
         </div>

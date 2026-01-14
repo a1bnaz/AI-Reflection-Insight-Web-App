@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 
-export function useCreateEntry(){
+export function useAnalyzeEntry(){
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (payload) => {
-            console.log("Sending entry:", payload); // Debug log
-            const response = await api.post("/entries", payload);
+        mutationFn: async (entryId) => {
+            console.log("Analyzing entry:", entryId);
+            const response = await api.put(`/entries/${entryId}/analyze`);
             
             return response.data;
         },
@@ -15,7 +15,7 @@ export function useCreateEntry(){
             queryClient.invalidateQueries({queryKey : ["entries"] });
         },
         onError: (error) => {
-            alert(error.response?.data?.message || "failed to create entry. please fill in all required fields.");
+            console.error(error);
         }
     })
 }

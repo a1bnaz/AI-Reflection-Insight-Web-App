@@ -58,6 +58,21 @@ public class EntryController {
         return ResponseEntity.ok(updatedEntry);
     }
 
+    @PutMapping("/{entryId}/analyze")
+    public ResponseEntity<EntryResponse> analyzeEntry(@PathVariable Long entryId, Authentication authentication){
+        String username = authentication.getName();
+        try {
+            EntryResponse analyzedEntry = entryService.analyzeEntry(entryId, username);
+
+            return ResponseEntity.ok(analyzedEntry);
+        } catch (Exception e) {
+            e.printStackTrace(); // print full stack trace
+            System.err.println("Error analyzing entry: " + e.getMessage());
+
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
     @DeleteMapping("/{entryId}")
     public String deleteEntry(@PathVariable Long entryId, Authentication authentication){
         String username = authentication.getName();
