@@ -14,4 +14,4 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE 8080
 
 # run the app
-CMD ["sh", "-c", "java", "-jar", "target/*jar"]
+CMD ["java", "-jar", "target/backend.jar"]
