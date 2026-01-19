@@ -1,0 +1,17 @@
+# use java 17
+FROM eclipse-temurin:17-jdk
+
+# set working directory
+WORKDIR /app
+
+# copy everything into the container
+COPY . .
+
+# build the springboot app
+RUN ./mvnw clean package -DskipTests
+
+# expose port (render provides PORT env var)
+EXPOSE 8080
+
+# run the app
+CMD ["java", "-jar", "target/*jar"]
