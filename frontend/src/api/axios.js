@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 // 1. create an axios instance
 // this is a custom copy of axios with your backend's base URL already set.
 // we point to "/api" so requests go through Vite's dev proxy (see vite.config.js)
-const api = axios.create({ baseURL: "/api" });
+// in production, it uses the full URL from environment variable or defaults to Render URL
+const api = axios.create({ baseURL: process.env.VITE_API_URL || "https://ai-reflection-insight-web-app.onrender.com/api" });
 
 // 2. add the request interceptor
 api.interceptors.request.use((config) => {
