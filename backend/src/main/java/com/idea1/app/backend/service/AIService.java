@@ -23,6 +23,9 @@ public class AIService {
     }
 
     public AIAnalysisResult analyzeEntry(String title, String content) throws Exception {
+        if (openAiApiKey == null || openAiApiKey.isBlank()){
+            throw new RuntimeException("OPENAI_API_KEY is missing or empty");
+        }
         try {
             // construct the AI prompt
             String prompt = """
