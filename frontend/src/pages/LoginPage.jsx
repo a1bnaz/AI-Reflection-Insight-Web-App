@@ -73,7 +73,7 @@ function LoginPage() {
               setFormData((prev) => ({ ...prev, username: e.target.value }))
             }
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
-            placeholder="enter username (albert)"
+            placeholder="enter username"
           />
 
           {/* password */}
@@ -85,7 +85,7 @@ function LoginPage() {
               setFormData((prev) => ({ ...prev, password: e.target.value }))
             }
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
-            placeholder="enter password (123)"
+            placeholder="enter password"
           />
 
           {/* submit button -> login button */}
