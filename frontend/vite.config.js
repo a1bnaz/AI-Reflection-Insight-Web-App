@@ -12,9 +12,9 @@ export default defineConfig({
     // This tells Vite: if the browser requests /api, forward it to the Spring Boot server (port 8080)
     proxy: {
       '/api': {
-        target: 'https://ai-reflection-insight-web-app.onrender.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: true, // Set to true if Spring Boot is running over HTTPS
+        secure: false, // Local dev over HTTP
       },
     },
   },

@@ -18,7 +18,7 @@ function EntriesPage() {
   const [isHighlighting, setIsHighlighting] = useState(false);
   const highlightTimeoutRef = useRef(null);
 
-  const {mutate: createEntry, isPending: isCreating } = useCreateEntry(); // not using 
+  const {mutate: createEntry, isPending: isCreating } = useCreateEntry({ invalidateOnSuccess: false });
   const { mutate: analyzeEntry, isPending: isAnalyzing } = useAnalyzeEntry();
   const { mutate: deleteEntry, isPending: isDeleting } = useDeleteEntry();
   const { mutate: updateEntry, isPending: isUpdating } = useUpdateEntry();
@@ -30,6 +30,7 @@ function EntriesPage() {
   const [editEntryData, setEditEntryData] = useState({ title: "", content: ""});
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [viewingEntry, setViewingEntry] = useState(null);
+  const isProcessingEntry = isCreating || isAnalyzing;
 
   const handleAnalyzeEntry = () => {
 
@@ -214,7 +215,7 @@ function EntriesPage() {
             <form className="mt-4 flex flex-col gap-3">
               <input
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
-                placeholder="Title"
+                placeholder="Title your entry"
                 type="text"
                 value={entryData.title}
                 onChange={(e) => setEntryData({...entryData, title: e.target.value})}
@@ -230,9 +231,9 @@ function EntriesPage() {
                   className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
                   type="button"
                   onClick={handleAnalyzeEntry}
-                  disabled={isAnalyzing}
+                  disabled={isProcessingEntry}
                 >
-                  {isAnalyzing ? "Analyzing..." : "Analyze"}
+                  {isProcessingEntry ? "Analyzing..." : "Analyze"}
                 </button>
                 <button
                   className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
@@ -242,6 +243,15 @@ function EntriesPage() {
                   Clear
                 </button>
               </div>
+              {isProcessingEntry && (
+                <div className="mt-1 inline-flex items-center gap-2 text-sm text-slate-600">
+                  <span
+                    className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700"
+                    aria-hidden="true"
+                  />
+                  <span>Analyzing your entry...</span>
+                </div>
+              )}
             </form>
           </div>
         </section>

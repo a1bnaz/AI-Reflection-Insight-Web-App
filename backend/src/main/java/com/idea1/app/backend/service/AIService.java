@@ -31,7 +31,7 @@ public class AIService {
             String prompt = """
                 Analyze the following journal entry and return a JSON object with 4 fields:
                 1. "summary": a 2-3 sentence summary of the entry
-                2. "insight": a concise actionable insight or recommendation
+                2. "insight": a concise actionable insight or recommendation. Act as a therapist while also providing actionable steps.
                 3. "themes": a list of keywords or topics mentioned in the entry
                 4. "tone": the overall emotinal tone of the entry, one word
                 Do not include any explanation, only output valid JSON.

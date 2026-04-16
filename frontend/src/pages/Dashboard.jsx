@@ -72,13 +72,14 @@ function Dashboard() {
             ))}
           </div>
 
-          <button
+          {/* ADD NEW ENTRY BUTTON COMMENTED OUT CAUSE I DON'T WANT IT ON THE DASHBOARD ANYMORE (4/16/26) */}
+          {/* <button
             className="mt-4 w-full rounded-lg border-2 border-dashed border-slate-200 py-2 text-sm font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition"
             type="button"
             onClick={() => setIsAddEntryModalOpen(true)}
           >
             + Add new entry
-          </button>
+          </button> */}
         </section>
 
       </div>

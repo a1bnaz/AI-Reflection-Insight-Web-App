@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 
-export function useCreateEntry(){
+export function useCreateEntry(options = {}){
+    const { invalidateOnSuccess = true } = options;
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -12,7 +13,9 @@ export function useCreateEntry(){
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey : ["entries"] });
+            if (invalidateOnSuccess) {
+                queryClient.invalidateQueries({queryKey : ["entries"] });
+            }
         },
         onError: (error) => {
             alert(error.response?.data?.message || "failed to create entry. please fill in all required fields.");

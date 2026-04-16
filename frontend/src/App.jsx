@@ -1,4 +1,5 @@
 import AppRoutes from "./routes/AppRoutes";
+import ModeBadge from "./components/ModeBadge";
 import { useEffect } from "react";
 import api from "./api/axios";
 import { useAuthStore } from "./store/authStore";
@@ -24,7 +25,12 @@ function App() {
     // cleanup: remove interceptor when component unmounts
     return () => api.interceptors.response.eject(interceptor);
   }, [navigate, logout]);
-  return <AppRoutes />;
+  return (
+    <>
+      <ModeBadge />
+      <AppRoutes />
+    </>
+  );
 }
 
 export default App;
