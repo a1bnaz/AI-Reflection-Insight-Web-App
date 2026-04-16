@@ -1,7 +1,6 @@
 package com.idea1.app.backend.config;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +37,9 @@ public class SecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource())); // enable CORS
         http.csrf(customizer -> customizer.disable()); // disable CSRF for stateless JWT authentication
         http.authorizeHttpRequests(request -> request
-            .requestMatchers("/api/register", "/api/login", "/test/").permitAll()
+            .requestMatchers("/api/register", "/api/login", "/test/", "/h2-console/**").permitAll()
             .anyRequest().authenticated()); // all other requests need to be authenticated
+        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         http.formLogin(form -> form.disable()); // disable form login for JWT-based auth
         http.httpBasic(basic -> basic.disable()); // disable basic auth - using JWT only
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

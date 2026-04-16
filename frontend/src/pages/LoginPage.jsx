@@ -45,11 +45,11 @@ function LoginPage() {
             />
             <h3 className="mt-4 text-lg font-semibold text-slate-900">Logging you in...</h3>
             <p className="mt-2 text-sm text-slate-600">
-              please keep this tab open while this app loads up ;)
+              loading this $15m app...
             </p>
             {showWakeMessage && (
               <p className="mt-2 text-sm text-slate-500">
-                the first request can take 30-45 seconds while the free server wakes up (i'm using Render's free version so it has a cold start pls don't leave).
+                if it's taking a long time to login, the first request can take 45s+ seconds while the server wakes up (i'm using Render's free version so it has a cold start pls don't leave).
               </p>
             )}
           </div>
