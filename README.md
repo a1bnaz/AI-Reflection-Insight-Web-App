@@ -5,9 +5,9 @@ this is my first personal project that i actually finished. it was originally su
 <https://aireflection.vercel.app>
 
 ## Screenshots
-![alt text](image-1.png)
-![alt text](image-2.png)
-![alt text](image-3.png)
+![Login](screenshots/loginscreenshot.png)
+![Entries](screenshots/entriespagescreenshot.png)
+![Entry Analysis](screenshots/exampleentryscreenshot.png)
 
 ## Tech Stack
 - **frontend** - react, vite, tailwind, react query, zustand, axios
