@@ -56,61 +56,63 @@ function LoginPage() {
         </div>
       )}
 
-      <div className="border rounded-lg p-6 max-w-md mx-auto mt-20 shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Login
-        </h2>
+      <div className="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-16">
+        <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-cyan-400/25 blur-3xl" />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* username */}
-          <div className="block text-sm font-medium text-gray-700">
-            username
-          </div>
-          <input
-            type="text"
-            value={formData.username}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, username: e.target.value }))
-            }
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
-            placeholder="enter username"
-          />
+        <div className="relative mx-auto w-full max-w-md rounded-2xl border border-white/15 bg-white/90 p-7 shadow-2xl backdrop-blur">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">AI Reflection</p>
+          <h2 className="mt-2 text-3xl font-bold text-slate-900">Welcome back</h2>
 
-          {/* password */}
-          <div className="block text-sm font-medium text-gray-700">password</div>
-          <input
-            type="password"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, password: e.target.value }))
-            }
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-100"
-            placeholder="enter password"
-          />
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700">Username</label>
+              <input
+                type="text"
+                value={formData.username}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, username: e.target.value }))
+                }
+                className="mt-1.5 block w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm shadow-sm focus:border-slate-400 focus:outline-none"
+                placeholder="enter username"
+              />
+            </div>
 
-          {/* submit button -> login button */}
-          <button
-            type="submit"
-            className="w-full bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-200 font-semibold"
-            disabled={isPending}
-          >
-            {isPending ? "Logging in..." : "Log In"}
-          </button>
+            <div>
+              <label className="block text-sm font-medium text-slate-700">Password</label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, password: e.target.value }))
+                }
+                className="mt-1.5 block w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm shadow-sm focus:border-slate-400 focus:outline-none"
+                placeholder="enter password"
+              />
+            </div>
 
-          {/* submit button -> register button */}
-          <button
-            type="button"
-            onClick={handleRegisterButton}
-            className="w-full bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-200 font-semibold"
-            disabled={isPending}
-          >
-            Register
-          </button>
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
+              disabled={isPending}
+            >
+              {isPending ? "Logging in..." : "Log In"}
+            </button>
 
-          {isError && (
-            <p className="text-red-600 text-sm">Login failed. Try again.</p>
-          )}
-        </form>
+            <button
+              type="button"
+              onClick={handleRegisterButton}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition duration-200 hover:border-slate-400 hover:bg-slate-100 hover:text-slate-950 hover:shadow-md"
+              disabled={isPending}
+            >
+              Create an account
+            </button>
+
+            {isError && (
+              <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">Login failed. Try again.</p>
+            )}
+          </form>
+        </div>
       </div>
     </>
   );
